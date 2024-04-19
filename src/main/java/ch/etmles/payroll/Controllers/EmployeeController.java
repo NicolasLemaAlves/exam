@@ -4,6 +4,7 @@ import ch.etmles.payroll.Entities.Employee;
 import ch.etmles.payroll.Repositories.EmployeeRepository;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -28,11 +29,22 @@ public class EmployeeController {
         -H "Content-type:application/json" ^
         -d "{\"name\": \"Russel George\", \"role\": \"gardener\"}"
     */
+
     @PostMapping("/employees")
     Employee newEmployee(@RequestBody Employee newEmployee){
+        if (isMinor(newEmployee.getDateOfBirth())) {
+            throw new MinorEmployeeException(newEmployee.getName());
+        }
+
         return repository.save(newEmployee);
     }
 
+    // Vérifie si la date de naissance indique que l'employé est mineur
+    private boolean isMinor(LocalDate dateOfBirth) {
+        LocalDate currentDate = LocalDate.now();
+        LocalDate eighteenYearsAgo = currentDate.minusYears(18);
+        return dateOfBirth.isAfter(eighteenYearsAgo);
+    }
     /* curl sample :
     curl -i localhost:8080/employees/1
     */
@@ -53,6 +65,7 @@ public class EmployeeController {
                 .map(employee -> {
                     employee.setName(newEmployee.getName());
                     employee.setRole(newEmployee.getRole());
+                    employee.setDateOfBirth(newEmployee.getDateOfBirth());
                     return repository.save(employee);
                 })
                 .orElseGet(() -> {

@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -14,11 +15,22 @@ public class Employee {
     private String name;
     private String role;
 
+    private LocalDate dateOfBirth;
+
     public Employee(){}
 
-    public Employee(String name, String role){
+    public Employee(String name, String role, LocalDate dateOfBirth){
         this.setName(name);
         this.setRole(role);
+        this.setDateOfBirth(dateOfBirth);
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate birthdate) {
+        this.dateOfBirth = birthdate;
     }
 
     public Long getID(){
@@ -37,6 +49,7 @@ public class Employee {
         this.name = name;
     }
 
+
     public String getRole(){
         return this.role;
     }
@@ -52,16 +65,16 @@ public class Employee {
         if(!(o instanceof Employee employee))
             return false;
         return Objects.equals(this.id, employee.id) && Objects.equals(this.name, employee.name)
-                && Objects.equals(this.role, employee.role);
+                && Objects.equals(this.role, employee.role) && Objects.equals(this.dateOfBirth, employee.dateOfBirth);
     }
 
     @Override
     public int hashCode(){
-        return Objects.hash(this.id, this.name, this.role);
+        return Objects.hash(this.id, this.name, this.role, this.dateOfBirth);
     }
 
     @Override
     public String toString(){
-        return "Employee{" + "id=" + this.getID() + ", name='" + this.getName() + '\'' + ", role='" + this.getRole() + '\'' + '}';
+        return "Employee{" + "id=" + this.getID() + ", name='" + this.getName() + '\'' + ", role='" + this.getRole() + '\'' + ", dateOfBirth='" + this.getDateOfBirth() + '\'' + '}';
     }
 }
